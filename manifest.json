@@ -4,7 +4,7 @@
    "name": "Youtube Premium",
    "default_locale": "en",
    "version": "1.0",
-   "description": "Fake Youtube Premium",
+   "description": "Youtube Premium",
    "action": {
       "default_icon": "icons/icon128.png",
       "default_title": "Youtube Premium"
