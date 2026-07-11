@@ -19,7 +19,8 @@
             "*://*.music.youtube.com/*"
          ],
          "js": [
-            "main.js"
+            "main.js",
+            "block-3x.js"
          ],
          "matches": [
             "*://youtube.com/*",
