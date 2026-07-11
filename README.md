@@ -15,7 +15,7 @@ A lightweight browser extension that swaps the standard YouTube logo with a slee
 
 1. **Grab the code** — Download as ZIP or clone the repo:
    ```
-   git clone https://github.com/shresth/youtube-premium-badge.git
+   git clone https://github.com/Shresthzzzz/youtube-premium-for-free-.git
    ```
 2. **Unzip** the downloaded archive to any folder on your machine.
 3. **Open your browser** and head to the extensions page:
