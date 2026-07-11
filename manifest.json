@@ -19,8 +19,7 @@
             "*://*.music.youtube.com/*"
          ],
          "js": [
-            "main.js",
-            "speed-toggle.js"
+            "main.js"
          ],
          "matches": [
             "*://youtube.com/*",
