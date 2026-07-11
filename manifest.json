@@ -12,7 +12,7 @@
    "background": {
       "service_worker": "worker.js"
    },
-   "homepage_url": "https://github.com/shresth",
+   "homepage_url": "https://github.com/Shresthzzzz",
    "content_scripts": [
       {
          "exclude_matches": [
