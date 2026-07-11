@@ -6,6 +6,15 @@ A lightweight browser extension that swaps the standard YouTube logo with a slee
 
 ---
 
+## Features
+
+- 3x Premium feature working
+- YT Premium features working
+- Premium logo
+- Premium experience added
+
+---
+
 ## Getting Started
 
 ### Prerequisites
