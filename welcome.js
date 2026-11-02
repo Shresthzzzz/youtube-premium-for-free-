@@ -1,15 +1,25 @@
 (() => {
   'use strict';
 
-  const STORAGE_KEY = 'yt_premium_welcome_seen_v1';
+  const STORAGE_KEY = 'yt_premium_welcome_v2';
   const GITHUB_URL = 'https://github.com/Shresthzzzz/youtube-premium-for-free-';
 
-  if (localStorage.getItem(STORAGE_KEY)) {
-    return;
+  function shouldShow() {
+    if (window.location.search.includes('welcome=1') || window.location.hash.includes('welcome')) {
+      return true;
+    }
+    return !localStorage.getItem(STORAGE_KEY);
   }
 
-  function renderModal() {
+  function renderModal(forced = false) {
+    if (!forced && !shouldShow()) return;
     if (document.getElementById('yt-premium-welcome-modal')) return;
+
+    const target = document.body || document.documentElement;
+    if (!target) {
+      requestAnimationFrame(() => renderModal(forced));
+      return;
+    }
 
     const modalContainer = document.createElement('div');
     modalContainer.id = 'yt-premium-welcome-modal';
@@ -250,7 +260,7 @@
         <div class="yt-prem-body">
           <div class="yt-prem-creator-callout">
             <span>Created by <span class="yt-prem-creator-name">Shresth</span></span>
-            <span style="color: #ff4e4e; font-weight: 500;">v1.2</span>
+            <span style="color: #ff4e4e; font-weight: 500;">v1.3</span>
           </div>
 
           <div class="yt-prem-features-title">Features Enabled</div>
@@ -293,7 +303,7 @@
       </div>
     `;
 
-    document.body.appendChild(modalContainer);
+    target.appendChild(modalContainer);
 
     function dismissModal() {
       localStorage.setItem(STORAGE_KEY, 'true');
@@ -310,7 +320,6 @@
       dismissModal();
     });
 
-    // Dismiss when clicking outside modal card
     modalContainer.addEventListener('click', (e) => {
       if (e.target === modalContainer) {
         dismissModal();
@@ -318,9 +327,22 @@
     });
   }
 
-  if (document.body) {
-    renderModal();
-  } else {
-    window.addEventListener('DOMContentLoaded', renderModal, { once: true });
+  // Expose global trigger for easy testing anytime via console: window.__showYtPremiumWelcome()
+  window.__showYtPremiumWelcome = () => renderModal(true);
+
+  function start() {
+    if (document.body || document.documentElement) {
+      renderModal();
+    } else {
+      const initTimer = setInterval(() => {
+        if (document.body || document.documentElement) {
+          clearInterval(initTimer);
+          renderModal();
+        }
+      }, 10);
+    }
   }
+
+  start();
+  window.addEventListener('DOMContentLoaded', start, { once: true });
 })();
