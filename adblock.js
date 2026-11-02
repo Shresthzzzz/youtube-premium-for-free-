@@ -1,14 +1,6 @@
 (() => {
   'use strict';
 
-  // Fallback: inject script directly into DOM at document_start
-  try {
-    const script = document.createElement('script');
-    script.src = chrome.runtime.getURL('inject.js');
-    script.onload = () => script.remove();
-    (document.head || document.documentElement).appendChild(script);
-  } catch (_) {}
-
   let originalPlaybackRate = 1;
   let isHandlingAd = false;
 
@@ -24,12 +16,12 @@
 
   function clickSkipButtons() {
     for (const selector of SKIP_SELECTORS) {
-      const buttons = document.querySelectorAll(selector);
-      for (let i = 0; i < buttons.length; i++) {
-        try {
+      try {
+        const buttons = document.querySelectorAll(selector);
+        for (let i = 0; i < buttons.length; i++) {
           buttons[i].click();
-        } catch (_) {}
-      }
+        }
+      } catch (_) {}
     }
   }
 
@@ -51,18 +43,18 @@
         isHandlingAd = true;
       }
 
-      // 1. Instantly mute audio so nothing leaks
+      // 1. Instantly mute audio
       video.muted = true;
 
       // 2. Set extreme playback rate
       video.playbackRate = 16.0;
 
-      // 3. Immediately seek to the very end to end the ad stream instantly
+      // 3. Immediately seek to end
       if (Number.isFinite(video.duration) && video.duration > 0) {
         video.currentTime = video.duration + 1;
       }
 
-      // 4. Fire click event on any available skip triggers
+      // 4. Click skip triggers
       clickSkipButtons();
     } else {
       if (isHandlingAd) {
@@ -81,24 +73,30 @@
 
     if (enforcement) {
       const parentDialog = enforcement.closest('tp-yt-paper-dialog') || enforcement;
-      parentDialog.remove();
-      dismissed = true;
+      if (parentDialog && parentDialog.parentNode) {
+        parentDialog.remove();
+        dismissed = true;
+      }
     }
 
     dialogs.forEach(dialog => {
       const text = dialog.textContent || '';
       if (text.includes('Ad blockers violate YouTube') || text.includes('Ad blockers are not allowed')) {
-        dialog.remove();
-        dismissed = true;
+        if (dialog.parentNode) {
+          dialog.remove();
+          dismissed = true;
+        }
       }
     });
 
     if (dismissed) {
       const backdrops = document.querySelectorAll('tp-yt-iron-overlay-backdrop');
-      backdrops.forEach(b => b.remove());
+      backdrops.forEach(b => {
+        if (b.parentNode) b.remove();
+      });
 
-      document.body.style.overflow = 'auto';
-      document.documentElement.style.overflow = 'auto';
+      if (document.body) document.body.style.overflow = 'auto';
+      if (document.documentElement) document.documentElement.style.overflow = 'auto';
 
       const video = document.querySelector('video');
       if (video && video.paused) {
@@ -108,11 +106,13 @@
   }
 
   function monitor() {
-    handleVideoAds();
-    bypassAntiAdblockDialog();
+    try {
+      handleVideoAds();
+      bypassAntiAdblockDialog();
+    } catch (_) {}
   }
 
-  // High-frequency polling (30ms) for instantaneous zero-latency skipping
+  // High-frequency polling (30ms)
   setInterval(monitor, 30);
 
   // Observer for rapid DOM mutations
@@ -121,8 +121,9 @@
   });
 
   function initObserver() {
-    if (document.body) {
-      observer.observe(document.body, {
+    const target = document.body || document.documentElement;
+    if (target) {
+      observer.observe(target, {
         childList: true,
         subtree: true,
         attributes: true,
