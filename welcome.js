@@ -1,23 +1,35 @@
 (() => {
   'use strict';
 
-  const STORAGE_KEY = 'yt_premium_welcome_v2';
+  const STORAGE_KEY = 'yt_premium_welcome_seen';
   const GITHUB_URL = 'https://github.com/Shresthzzzz/youtube-premium-for-free-';
 
-  function shouldShow() {
-    if (window.location.search.includes('welcome=1') || window.location.hash.includes('welcome')) {
-      return true;
+  function checkSeen(callback) {
+    if (typeof chrome !== 'undefined' && chrome.storage && chrome.storage.local) {
+      try {
+        chrome.storage.local.get([STORAGE_KEY], (res) => {
+          callback(Boolean(res && res[STORAGE_KEY]));
+        });
+        return;
+      } catch (_) {}
     }
-    return !localStorage.getItem(STORAGE_KEY);
+    callback(false);
   }
 
-  function renderModal(forced = false) {
-    if (!forced && !shouldShow()) return;
+  function markSeen() {
+    if (typeof chrome !== 'undefined' && chrome.storage && chrome.storage.local) {
+      try {
+        chrome.storage.local.set({ [STORAGE_KEY]: true });
+      } catch (_) {}
+    }
+  }
+
+  function renderModal() {
     if (document.getElementById('yt-premium-welcome-modal')) return;
 
     const target = document.body || document.documentElement;
     if (!target) {
-      requestAnimationFrame(() => renderModal(forced));
+      requestAnimationFrame(renderModal);
       return;
     }
 
@@ -306,7 +318,7 @@
     target.appendChild(modalContainer);
 
     function dismissModal() {
-      localStorage.setItem(STORAGE_KEY, 'true');
+      markSeen();
       modalContainer.style.animation = 'ytFadeOut 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards';
       setTimeout(() => {
         modalContainer.remove();
@@ -327,20 +339,27 @@
     });
   }
 
-  // Expose global trigger for easy testing anytime via console: window.__showYtPremiumWelcome()
-  window.__showYtPremiumWelcome = () => renderModal(true);
+  // Expose global trigger for manual testing anytime: window.__showYtPremiumWelcome()
+  window.__showYtPremiumWelcome = () => renderModal();
 
   function start() {
-    if (document.body || document.documentElement) {
-      renderModal();
-    } else {
-      const initTimer = setInterval(() => {
-        if (document.body || document.documentElement) {
-          clearInterval(initTimer);
+    checkSeen((alreadySeen) => {
+      const isForced = window.location.search.includes('welcome=1') || window.location.hash.includes('welcome');
+      if (alreadySeen && !isForced) {
+        return;
+      }
+
+      function mount() {
+        const target = document.body || document.documentElement;
+        if (target) {
           renderModal();
+        } else {
+          requestAnimationFrame(mount);
         }
-      }, 10);
-    }
+      }
+
+      mount();
+    });
   }
 
   start();

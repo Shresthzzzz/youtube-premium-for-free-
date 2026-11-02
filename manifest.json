@@ -14,7 +14,8 @@
   },
   "homepage_url": "https://github.com/Shresthzzzz/youtube-premium-for-free-",
   "permissions": [
-    "declarativeNetRequest"
+    "declarativeNetRequest",
+    "storage"
   ],
   "declarative_net_request": {
     "rule_resources": [
