@@ -1,0 +1,59 @@
+/* YouTube Cosmetic & Zero-Flash Ad Blocking Styles */
+
+/* 1. Eliminate any ad video visual flash when ad is active */
+.ad-showing .html5-main-video,
+.ad-interrupting .html5-main-video {
+  visibility: hidden !important;
+}
+
+/* 2. Hide all Video Player Ad Modules & Overlays */
+.video-ads,
+.ytp-ad-module,
+.ytp-ad-player-overlay,
+.ytp-ad-player-overlay-layout,
+.ytp-ad-player-overlay-skip-or-preview,
+.ytp-ad-persistent-progress-bar-container,
+.ytp-ad-action-interstitial,
+.ytp-ad-overlay-container,
+.ytp-ad-message-container,
+.ytp-ad-text-overlay,
+.ytp-ad-image-overlay,
+.ytp-ad-progress-list,
+.ytp-ad-preview-container,
+
+/* 3. Feed, Masthead, and Home Ads */
+#masthead-ad,
+ytd-ad-slot-renderer,
+ytd-in-feed-ad-layout-renderer,
+ytd-banner-promo-renderer,
+ytd-promoted-sparkles-web-renderer,
+ytd-promoted-video-renderer,
+ytd-display-ad-renderer,
+ytd-statement-banner-renderer,
+ytd-rich-item-renderer:has(ytd-ad-slot-renderer),
+ytd-rich-section-renderer:has(ytd-statement-banner-renderer),
+ytd-rich-section-renderer:has(ytd-in-feed-ad-layout-renderer),
+yt-mealbar-promo-renderer,
+#mealbar-promo-renderer,
+
+/* 4. Watch Page Companion & Sidebar Ads */
+ytd-player-legacy-desktop-watch-ads-renderer,
+ytd-action-companion-ad-renderer,
+ytd-companion-slot-renderer,
+ytd-ads-engagement-panel-content-renderer,
+#panels:has(ytd-ads-engagement-panel-content-renderer),
+.ytd-merch-shelf-renderer,
+
+/* 5. Search Result Ads */
+ytd-search-pyv-renderer,
+
+/* 6. Anti-Adblock Enforcement Modals */
+ytd-enforcement-message-view-model,
+tp-yt-paper-dialog:has(ytd-enforcement-message-view-model) {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+  height: 0 !important;
+  width: 0 !important;
+}

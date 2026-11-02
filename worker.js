@@ -1,38 +1,24 @@
 (() => {
-    let api;
+  const api = typeof chrome !== 'undefined' && chrome.runtime ? chrome : (typeof browser !== 'undefined' ? browser : null);
+  if (!api) return;
 
-    if (isChrome()) api = chrome;
-    else if (isFirefox()) api = browser;
-
-    api.runtime.onInstalled.addListener((details) => {
-        if (
-            // No need to show changelog if its was a browser update (and not extension update)
-            details.reason === "browser_update" ||
-            // Chromium (e.g., Google Chrome Cannary) uses this name instead of the one above for some reason
-            details.reason === "chrome_update" ||
-            // No need to show changelog if developer just reloaded the extension
-            details.reason === "update"
-        ) {
-            return;
-        } else if (details.reason == "install") {
-            api.tabs.create({
-                url: "https://shresthdesign.vercel.app/?ref=extension",
-            });
-        }
-    });
-
-    api.action.onClicked.addListener(function (tab) {
-        api.tabs.create({ url: "https://shresthdesign.vercel.app/" });
-    });
-
-    function isChrome() {
-        return typeof chrome !== "undefined" && typeof chrome.runtime !== "undefined";
+  api.runtime.onInstalled.addListener((details) => {
+    if (
+      details.reason === 'browser_update' ||
+      details.reason === 'chrome_update' ||
+      details.reason === 'update'
+    ) {
+      return;
+    } else if (details.reason === 'install') {
+      api.tabs.create({
+        url: 'https://www.youtube.com/'
+      });
     }
+  });
 
-    function isFirefox() {
-        return (
-            typeof browser !== "undefined" && typeof browser.runtime !== "undefined"
-        );
-    }
-
-})()
+  api.action.onClicked.addListener(() => {
+    api.tabs.create({
+      url: 'https://github.com/Shresthzzzz/youtube-premium-for-free-'
+    });
+  });
+})();

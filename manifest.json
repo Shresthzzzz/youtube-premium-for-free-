@@ -1,39 +1,85 @@
 {
-   "manifest_version": 3,
-   "author": "shresth",
-   "name": "Youtube Premium",
-   "default_locale": "en",
-   "version": "1.0",
-   "description": "Youtube Premium",
-   "action": {
-      "default_icon": "icons/icon128.png",
-      "default_title": "Youtube Premium"
-   },
-   "background": {
-      "service_worker": "worker.js"
-   },
-   "homepage_url": "https://github.com/Shresthzzzz",
-   "content_scripts": [
+  "manifest_version": 3,
+  "author": "shresth",
+  "name": "Youtube Premium",
+  "default_locale": "en",
+  "version": "1.3",
+  "description": "YouTube Premium experience with built-in ad blocking and speed control",
+  "action": {
+    "default_icon": "icons/icon128.png",
+    "default_title": "Youtube Premium"
+  },
+  "background": {
+    "service_worker": "worker.js"
+  },
+  "homepage_url": "https://github.com/Shresthzzzz/youtube-premium-for-free-",
+  "permissions": [
+    "declarativeNetRequest"
+  ],
+  "declarative_net_request": {
+    "rule_resources": [
       {
-         "exclude_matches": [
-            "*://*.music.youtube.com/*"
-         ],
-         "js": [
-            "main.js",
-            "block-3x.js"
-         ],
-         "matches": [
-            "*://youtube.com/*",
-            "*://www.youtube.com/*",
-            "*://m.youtube.com/*"
-         ]
+        "id": "ruleset_1",
+        "enabled": true,
+        "path": "rules.json"
       }
-   ],
-   "host_permissions": [
-      "*://*.youtube.com/*"
-   ],
-   "icons": {
-      "48": "icons/icon48.png",
-      "128": "icons/icon128.png"
-   }
+    ]
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "*://youtube.com/*",
+        "*://www.youtube.com/*",
+        "*://m.youtube.com/*"
+      ],
+      "exclude_matches": [
+        "*://*.music.youtube.com/*"
+      ],
+      "js": [
+        "inject.js"
+      ],
+      "world": "MAIN",
+      "run_at": "document_start"
+    },
+    {
+      "matches": [
+        "*://youtube.com/*",
+        "*://www.youtube.com/*",
+        "*://m.youtube.com/*"
+      ],
+      "exclude_matches": [
+        "*://*.music.youtube.com/*"
+      ],
+      "css": [
+        "adblock.css"
+      ],
+      "js": [
+        "adblock.js",
+        "main.js",
+        "block-3x.js",
+        "welcome.js"
+      ],
+      "run_at": "document_start"
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "inject.js"
+      ],
+      "matches": [
+        "*://*.youtube.com/*",
+        "*://youtube.com/*"
+      ]
+    }
+  ],
+  "host_permissions": [
+    "*://*.youtube.com/*",
+    "*://*.doubleclick.net/*",
+    "*://*.googleads.g.doubleclick.net/*"
+  ],
+  "icons": {
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  }
 }
